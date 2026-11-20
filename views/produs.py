@@ -82,6 +82,6 @@ def render() -> None:
     st.caption("Surse: studiul de caz Tech-Con/PURATOS, INS, Romalimenta, IFR, Universal Robots, presa economică 2026 "
                "(revistabiz, ZF, Agerpres). Cifrele de afaceri ale firmelor sunt pe 2025, ultimele bilanțuri depuse.")
     with st.container(key="cta"):
-        st.page_link(st.session_state.pages["evaluare"], label="Evaluează-ți linia  →")
+        st.page_link(st.session_state.pages["evaluare"], label="Evaluați linia dvs.", icon=":material/arrow_forward:")
     ui.chat_widget()
     ui.footer()
