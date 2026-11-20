@@ -17,14 +17,15 @@ from dataclasses import dataclass, field
 UR20_MAX_PAYLOAD_KG = 20.0
 BENCHMARK_LIGHT_BPM = 8.6   # 5 kg buckets, 100 per pallet (PURATOS test)
 BENCHMARK_HEAVY_BPM = 7.4   # 13 kg buckets, 44 per pallet (PURATOS test)
-LIGHT_BUCKET_THRESHOLD_KG = 8.0
+LIGHT_BUCKET_THRESHOLD_KG = 5.0   # 8,6/min was tested only on 5 kg buckets
 MIN_TARGET_BPM = 6.0
 BOTTLENECK_BPM = 8.6
 LOW_MARGIN_KG = 1.5
 SCENARIO_PRICE = "130.000 EUR (fără TVA)"
 DELIVERY_ESTIMATE = "~4 luni"
 PAYBACK_RANGE = "18–40 luni"
-DEFAULT_GRIPPER_KG = 2.8
+DEFAULT_GRIPPER_KG = 5.0   # assumption, same as the financial model
+SHIFT_HOURS = 8.0          # assumption for the manual-lifting estimate
 
 LABEL_FACT = "Rezultate de test PURATOS — nu reprezintă garanții universale"
 LABEL_ESTIMATE = "Estimare bazată pe ipotezele introducerii"
@@ -184,6 +185,8 @@ class SimulationResult:
     buckets_per_layer: float
     payback: str
     hub: str
+    manual_tonnes_shift: float
+    manual_lifts_per_min_operator: float
     verdict: str
     verdict_title: str
     score: int
@@ -294,9 +297,13 @@ def simulate(inp: SimulationInput) -> SimulationResult:
 
     n = inp.buckets_per_pallet
     layers = inp.layers
-    fill_time = n / inp.line_rate_bpm
+    # The cell cannot place faster than its tested rate, so timings use the slower of the two.
+    effective_rate = min(inp.line_rate_bpm, benchmark)
+    fill_time = n / effective_rate
     per_layer = n / layers
-    separator_time = per_layer / inp.line_rate_bpm
+    separator_time = per_layer / effective_rate
+    manual_tonnes_shift = inp.line_rate_bpm * 60 * SHIFT_HOURS * inp.bucket_weight_kg / 1000
+    manual_lifts_per_min_operator = inp.line_rate_bpm / 2  # 2 operators per shift, as at PURATOS
 
     overload = payload_total > UR20_MAX_PAYLOAD_KG
     risks = detect_risks(inp, payload_total, margin, benchmark, overload)
@@ -353,6 +360,8 @@ def simulate(inp: SimulationInput) -> SimulationResult:
         buckets_per_layer=per_layer,
         payback=payback_for_shifts(inp.shifts),
         hub=hub_for_county(inp.county),
+        manual_tonnes_shift=manual_tonnes_shift,
+        manual_lifts_per_min_operator=manual_lifts_per_min_operator,
         verdict=verdict,
         verdict_title=VERDICT_TITLES[verdict],
         score=score,

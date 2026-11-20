@@ -9,11 +9,13 @@ Rezumat al cerințelor implementate (vezi README.md pentru module):
 - Separare strictă: „Rezultate de test PURATOS — nu reprezintă garanții universale” vs. „Estimare bazată pe ipotezele introducerii”.
 - Toate calculele în `calculator.py` (zero matematică în LLM):
   - `payload_total = găleată + gripper` vs. 20 kg; `marjă = 20 − payload_total`
-  - `reper = 8,6` dacă găleată ≤ 8 kg, altfel `7,4`; `grad_încărcare = debit / reper × 100`
+  - `reper = 8,6` dacă găleată ≤ 5 kg (singurul format testat la 8,6), altfel `7,4`; `grad_încărcare = debit / reper × 100`
   - gâtuire dacă `debit > 8,6` → recomandare 2 celule în paralel
-  - `timp_umplere_palet = nr_găleți / debit`; `timp_separator = (nr_găleți / nr_straturi) / debit`
+  - `ritm_efectiv = min(debit, reper)`; `timp_umplere_palet = nr_găleți / ritm_efectiv`; `timp_separator = (nr_găleți / nr_straturi) / ritm_efectiv`
+  - `tone_manual_schimb = debit × 60 × 8 h × greutate / 1000` (ipoteză 8 h, 2 operatori)
+  - gripper implicit 5 kg (ipoteză, aceeași ca în modelul financiar)
   - ROȘU dacă payload > 20 kg; GALBEN dacă debit > reper, non-alimentar, aer ≠ Da, lichid, marjă < 1,5 kg, câmpuri confidențiale sau riscuri specifice; altfel VERDE
 - Hub-uri: Dragomirești-Deal (Sud), Iași (Moldova + Harghita), Timișoara (Vest / Nord-Vest).
-- 3 preseturi (Verde / Galben confidențial / Roșu suprasarcină), validare blocantă pentru valori ≤ 0.
+- 4 preseturi (Verde / Galben confidențial / Roșu suprasarcină / Date lipsă sau greșite), validare blocantă pentru valori ≤ 0.
 - Export HTML printabil + Markdown/TXT; Mini-CRM SQLite cu filtre Hub/Verdict și KPI.
 - Consultant AI: auto-completare din limbaj natural, Q&A pe brief-ul PURATOS, extragere riscuri nestructurate; contract JSON strict.
