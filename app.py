@@ -53,20 +53,26 @@ DEFAULTS = {
 
 PRESETS = {
     "Preset 1: Caz Valid (Lactate 13 kg)": {
-        "f_industry": calc.INDUSTRY_FOOD, "f_bucket": 13.0, "f_gripper": 2.8, "f_content": "Pastă-vâscos",
+        "f_industry": calc.INDUSTRY_FOOD, "f_bucket": 13.0, "f_gripper": 5.0, "f_content": "Pastă-vâscos",
         "f_handle": "Da", "f_rate": 6.5, "f_pallet": calc.PALLET_PRESET_13, "f_side": "Dual", "f_shifts": 2,
         "f_air": "Da", "f_equipment": "Transpalet", "f_county": "Ilfov", "f_confidential": [], "f_risks": [],
     },
     "Preset 2: Date Confidențiale / De Verificat": {
-        "f_industry": calc.INDUSTRY_NONFOOD, "f_bucket": 10.0, "f_gripper": 2.8, "f_content": "Lichid",
+        "f_industry": calc.INDUSTRY_NONFOOD, "f_bucket": 10.0, "f_gripper": 5.0, "f_content": "Lichid",
         "f_handle": "Da", "f_rate": 7.2, "f_pallet": calc.PALLET_CUSTOM, "f_custom_n": 60, "f_custom_layers": 4,
         "f_side": "Stânga", "f_shifts": 2, "f_air": "Nu știu", "f_equipment": "Liză", "f_county": "Cluj",
         "f_confidential": ["Nume companie", "Debit exact linie de vârf"], "f_risks": [],
     },
     "Preset 3: Eroare / Suprasarcină (>20 kg)": {
-        "f_industry": calc.INDUSTRY_FOOD, "f_bucket": 18.5, "f_gripper": 2.8, "f_content": "Pastă-vâscos",
+        "f_industry": calc.INDUSTRY_FOOD, "f_bucket": 18.5, "f_gripper": 5.0, "f_content": "Pastă-vâscos",
         "f_handle": "Da", "f_rate": 9.2, "f_pallet": calc.PALLET_PRESET_13, "f_side": "Dreapta", "f_shifts": 3,
         "f_air": "Nu", "f_equipment": "Stivuitor", "f_county": "Iași", "f_confidential": [], "f_risks": [],
+    },
+    "Preset 4: Date lipsă sau greșite": {
+        "f_industry": calc.INDUSTRY_FOOD, "f_bucket": 0.0, "f_gripper": 5.0, "f_content": "Pastă-vâscos",
+        "f_handle": "Da", "f_rate": -3.0, "f_pallet": calc.PALLET_CUSTOM, "f_custom_n": 0, "f_custom_layers": 4,
+        "f_side": "Dual", "f_shifts": 2, "f_air": "Da", "f_equipment": "Transpalet", "f_county": "Timiș",
+        "f_confidential": [], "f_risks": [],
     },
 }
 
@@ -342,7 +348,7 @@ tab_sim, tab_crm = st.tabs(["🧮 Simulator & Fișă Pre-Audit", "📇 Cereri Re
 
 with tab_sim:
     st.markdown("#### ⚡ Preseturi rapide")
-    pcols = st.columns(3)
+    pcols = st.columns(2) + st.columns(2)
     for col, (name, values) in zip(pcols, PRESETS.items()):
         if col.button(name, width="stretch"):
             queue_updates(dict(values), f"✅ {name} aplicat — formularul, animația și raportul au fost actualizate.")
@@ -483,9 +489,14 @@ with tab_sim:
             m = st.columns(3)
             m[0].metric("Selecție preluare", inp.side_selection)
             m[1].metric("Fereastră schimb palet", f"{calc.fmt_num(res.fill_time_min)} min",
-                        help=f"{inp.buckets_per_pallet} găleți / {calc.fmt_num(inp.line_rate_bpm, 2)} găleți/min")
+                        help=f"{inp.buckets_per_pallet} găleți / min(debit linie, reper testat {calc.fmt_num(res.benchmark_bpm)})")
             m[2].metric("Interval separator manual", f"{calc.fmt_num(res.separator_time_min)} min",
-                        help=f"({inp.buckets_per_pallet} / {inp.layers} straturi) / {calc.fmt_num(inp.line_rate_bpm, 2)} găleți/min")
+                        help=f"({inp.buckets_per_pallet} / {inp.layers} straturi) / min(debit linie, reper testat)")
+            t = st.columns(2)
+            t[0].metric("Tone ridicate manual azi / schimb", f"{calc.fmt_num(res.manual_tonnes_shift)} t",
+                        help=f"{calc.fmt_num(inp.line_rate_bpm, 2)} găleți/min × 60 × 8 h × {calc.fmt_num(inp.bucket_weight_kg)} kg — {calc.LABEL_ESTIMATE}")
+            t[1].metric("Ridicări / minut / operator", calc.fmt_num(res.manual_lifts_per_min_operator),
+                        help="Ipoteză: 2 operatori pe schimb, ca la PURATOS înainte de automatizare")
             sections = report_builder.report_sections(res)
             for k, v in sections["s3"]:
                 if k in ("Selecție preluare operator", "Configurație palet", "Siguranță"):

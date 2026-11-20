@@ -143,7 +143,7 @@ QA_TOPICS = [
      "Repere testate la PURATOS (nu garanții universale): 7,4 găleți/min la 13 kg (44 găleți/palet) și 8,6 găleți/min "
      "la 5 kg (100 găleți/palet), peste ținta minimă de 6 găleți/min. Peste 8,6 găleți/min recomandăm 2 celule în paralel."),
     (r"\b(sarcin\w*|payload|greutate maxim\w*|20 ?kg|cat ridica)\b",
-     "UR20 are sarcina maximă de 20 kg, care include găleata plină și gripperul pneumatic (estimat 2,8 kg). "
+     "UR20 are sarcina maximă de 20 kg, care include găleata plină și gripperul pneumatic (ipoteză 5 kg). "
      "Peste 20 kg configurația este incompatibilă."),
 ]
 
