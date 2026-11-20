@@ -144,3 +144,37 @@ def reset_demo_data() -> None:
         conn.execute("DELETE FROM leads")
         _insert_many(conn, _seed_rows())
         conn.commit()
+
+
+# --------------------------------------------------------------------------
+# Newsletter (fictional e-mails only)
+# --------------------------------------------------------------------------
+_NEWSLETTER_SCHEMA = """
+CREATE TABLE IF NOT EXISTS newsletter (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    topic TEXT NOT NULL
+)
+"""
+
+
+def add_subscriber(email: str, topic: str) -> bool:
+    """Store a newsletter sign-up. Returns False if the e-mail already exists."""
+    with closing(_connect()) as conn:
+        conn.execute(_NEWSLETTER_SCHEMA)
+        try:
+            conn.execute(
+                "INSERT INTO newsletter (created_at, email, topic) VALUES (?, ?, ?)",
+                (datetime.now().strftime("%Y-%m-%d %H:%M"), email.strip().lower(), topic),
+            )
+            conn.commit()
+            return True
+        except sqlite3.IntegrityError:
+            return False
+
+
+def count_subscribers() -> int:
+    with closing(_connect()) as conn:
+        conn.execute(_NEWSLETTER_SCHEMA)
+        return int(conn.execute("SELECT COUNT(*) FROM newsletter").fetchone()[0])
