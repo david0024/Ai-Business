@@ -1,0 +1,5 @@
+*.py
+views/
+requirements.txt
+.streamlit/
+.devcontainer/

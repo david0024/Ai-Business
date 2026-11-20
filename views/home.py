@@ -2,6 +2,7 @@
 import streamlit as st
 
 import calculator as calc
+import seo
 import ui
 
 
@@ -33,7 +34,7 @@ def render() -> None:
   <div class="pc-stat"><span class="pc-tag est">Scenariu</span><div class="v">~4 luni</div>
     <div class="l">până la livrare · 130.000 EUR fără TVA · recuperare orientativă 18–40 luni</div></div>
 </div>
-<h3 style="margin-top:2.2rem">Cum funcționează</h3>
+<h2 style="margin-top:2.2rem;font-size:1.6rem">Cum funcționează</h2>
 <div class="pc-steps">
   <div class="pc-step"><span class="n">01</span><b>Alegeți ramura</b><span>Ingrediente, lactate, sosuri sau vopsele de până la 10 L.</span></div>
   <div class="pc-step"><span class="n">02</span><b>Introduceți datele liniei</b><span>Greutate, ritm, schimburi și operatori. Doar date fictive.</span></div>
@@ -44,5 +45,7 @@ def render() -> None:
     )
     st.caption("În afara ofertei: transport autonom MiR (AGV/AMR), înfoliere și expediere. "
                "Schimbarea paleților și separatoarele rămân manuale.")
+    seo.faq_section()
+    seo.inject_structured_data()
     ui.chat_widget()
     ui.footer()

@@ -1,0 +1,16 @@
+# PaletCheck UR20
+
+> PaletCheck UR20 verifică în 2 minute dacă o linie de găleți de 5–15 kg se potrivește pentru o celulă de paletizare cu robotul colaborativ Universal Robots UR20, ca cea implementată de Tech-Con la PURATOS.
+
+## Fapte
+- Ce face celula de paletizare UR20? Robotul colaborativ UR20 preia gălețile de pe transportor, iar o cameră SICK 2D verifică poziția mânerului. Gălețile sunt așezate pe una dintre cele 2 poziții de paletizare, după un model programat. Sursa: studiul de caz Tech-Con / PURATOS.
+- Cât de repede paletizează robotul UR20 gălețile? În testele PURATOS: 7,4 găleți/min pentru găleți de 13 kg și 8,6 găleți/min pentru găleți de 5 kg, față de ținta de 6 găleți/min. Sunt rezultate de test, nu garanții pentru orice fabrică.
+- Ce greutate maximă poate avea găleata? UR20 are o sarcină utilă de 20 kg, iar gripperul intră în acest total. Cu un gripper de aproximativ 5 kg (ipoteză), găleata poate avea cel mult ~15 kg. Sursa: fișa tehnică Universal Robots UR20.
+- Ce rămâne de făcut manual? Schimbarea paleților plini și așezarea separatoarelor între straturi. Transportul autonom MiR, înfolierea și expedierea nu sunt incluse.
+- Cât costă și în cât timp se livrează o celulă? În scenariul de lucru, o celulă costă 130.000 EUR fără TVA și se livrează în aproximativ 4 luni. Fereastra orientativă de recuperare este de 18–40 de luni, în funcție de numărul de schimburi.
+- Un robot mai rapid crește producția fabricii? Nu automat. Dacă linia livrează mai puțin decât ritmul robotului, blocajul este în amonte (umplere, transportor). PaletCheck compară ritmul liniei cu ritmul testat ca să arate unde este limita.
+- Pentru ce fabrici se potrivește? Fabrici alimentare din România care ambalează în găleți de 5–15 kg: ingrediente pentru panificație și patiserie, lactate în găleți, sosuri pentru HoReCa. Vopselele se potrivesc doar în formate de până la 10 L.
+
+## Linkuri
+- Aplicația: https://ai-business-gaxjny2cz9duwfeeogktjl.streamlit.app/
+- Evaluare: https://ai-business-gaxjny2cz9duwfeeogktjl.streamlit.app/evaluare
