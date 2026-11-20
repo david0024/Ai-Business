@@ -476,3 +476,88 @@ def fmt_minutes(minutes: float) -> str:
     if m:
         return f"{fmt_num(minutes, 1)} min"
     return f"{s} s"
+
+
+# --------------------------------------------------------------------------
+# Benefits report (landing-page form). Deterministic; no wages, no custom ROI.
+# --------------------------------------------------------------------------
+SEGMENTS = [
+    "Ingrediente panificație & patiserie",
+    "Lactate în găleți",
+    "Sosuri & produse HoReCa",
+    "Vopsele & tencuieli (≤ 10 L, faza 2)",
+]
+WORKING_DAYS_PER_YEAR = 250      # assumption
+PALLET_CHANGE_MIN = 3.0          # assumption: manual pallet swap per pallet
+SEPARATOR_MIN_PER_LAYER = 0.5    # assumption: manual separator per layer
+CELL_AVAILABILITY = 0.85         # assumption, same as the financial model
+PAYBACK_RANGE_BY_SHIFTS = {3: (18, 24), 2: (24, 32), 1: (34, 40)}
+
+
+def benefits(bucket_kg: float, line_rate: float, hours: float, shifts: int,
+             operators: int, buckets_per_pallet: int, layers: int = 4) -> dict:
+    """Return the four benefit pillars for the evaluation report.
+
+    Assumes inputs were validated by `validate_benefits_input`.
+    """
+    bench = benchmark_for_weight(bucket_kg)
+    payload = bucket_kg + DEFAULT_GRIPPER_KG
+    buckets_shift = line_rate * 60 * hours
+    buckets_day = buckets_shift * shifts
+    tonnes_shift = buckets_shift * bucket_kg / 1000
+    tonnes_day = tonnes_shift * shifts
+    tonnes_year = tonnes_day * WORKING_DAYS_PER_YEAR
+
+    pallets_day = buckets_day / buckets_per_pallet
+    manual_min_day = pallets_day * (PALLET_CHANGE_MIN + layers * SEPARATOR_MIN_PER_LAYER)
+    op_hours_now = operators * hours * shifts
+    op_hours_with_cell = manual_min_day / 60
+    freed_day = max(0.0, op_hours_now - op_hours_with_cell)
+
+    cell_capacity_day = bench * 60 * hours * shifts * CELL_AVAILABILITY
+    headroom_day = max(0.0, cell_capacity_day - buckets_day)
+    lo, hi = PAYBACK_RANGE_BY_SHIFTS[int(shifts)]
+
+    return {
+        "eligible": payload <= UR20_MAX_PAYLOAD_KG,
+        "payload": payload,
+        "benchmark": bench,
+        "bottleneck": line_rate > bench,
+        "load_pct": line_rate / bench * 100,
+        # Pillar 1 – money window & capacity
+        "payback_lo": lo, "payback_hi": hi,
+        "headroom_day": headroom_day,
+        "headroom_t_year": headroom_day * bucket_kg / 1000 * WORKING_DAYS_PER_YEAR,
+        "cell_capacity_day": cell_capacity_day,
+        # Pillar 2 – time
+        "op_hours_now_day": op_hours_now,
+        "op_hours_cell_day": op_hours_with_cell,
+        "freed_hours_day": freed_day,
+        "freed_hours_year": freed_day * WORKING_DAYS_PER_YEAR,
+        "pallet_window_min": buckets_per_pallet / min(line_rate, bench),
+        # Pillar 3 – people
+        "tonnes_shift": tonnes_shift,
+        "tonnes_year": tonnes_year,
+        "tonnes_per_operator_shift": tonnes_shift / operators,
+        "lifts_per_operator_shift": buckets_shift / operators,
+        "lifts_day": buckets_day,
+    }
+
+
+def validate_benefits_input(bucket_kg, line_rate, hours, shifts, operators, buckets_per_pallet) -> list[str]:
+    errs = []
+    rules = [
+        (bucket_kg, "Greutatea găleții (kg)", 0.5, 40),
+        (line_rate, "Ritmul liniei (găleți/min)", 0.1, 40),
+        (hours, "Ore pe schimb", 1, 12),
+        (operators, "Operatori la paletizare / schimb", 1, 10),
+        (buckets_per_pallet, "Găleți pe palet", 4, 300),
+    ]
+    for value, label, lo, hi in rules:
+        if value is None or not _is_finite(value):
+            errs.append(f"„{label}” lipsește.")
+        elif not (lo <= float(value) <= hi):
+            errs.append(f"„{label}” trebuie să fie între {fmt_num(lo)} și {fmt_num(hi, 0)}.")
+    if shifts not in SHIFTS:
+        errs.append("Alegeți 1, 2 sau 3 schimburi.")
+    return errs
