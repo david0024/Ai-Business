@@ -17,10 +17,7 @@ def render() -> None:
             "pentru linia dvs.</p></div>",
             unsafe_allow_html=True,
         )
-        st.pills("Ramura de producție", calc.SEGMENTS, key="segment_pick",
-                 default=st.session_state.segment)
-        if st.session_state.get("segment_pick"):
-            st.session_state.segment = st.session_state.segment_pick
+        ui.segment_marquee()
         with st.container(key="cta"):
             st.page_link(st.session_state.pages["evaluare"], label="Evaluați linia dvs.", icon=":material/arrow_forward:")
     with right:
