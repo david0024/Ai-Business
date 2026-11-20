@@ -24,9 +24,7 @@ button p, [data-testid="stWidgetLabel"] p {{ font-family:'Inter', system-ui, -ap
 [data-testid="stToolbar"] > *:not([data-testid="stTopNav"]):not(:has([data-testid="stTopNav"])),
 [data-testid="stDecoration"], [data-testid="stStatusWidget"],
 [data-testid="stHeaderActionElements"], .stDeployButton, footer {{ display:none !important; }}
-header[data-testid="stHeader"] {{ background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(12px);
-  border-bottom:1px solid var(--line); }}
-.block-container {{ padding-top:2.2rem; padding-bottom:2rem; max-width:1120px; }}
+.block-container {{ padding-top:0; padding-bottom:2rem; max-width:1120px; }}
 h1,h2,h3 {{ color:var(--ink); letter-spacing:-0.025em; font-weight:700; }}
 .pc-note {{ display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.8rem; margin-bottom:1.4rem; }}
 .pc-note svg {{ flex:none; }}
@@ -69,6 +67,37 @@ h1,h2,h3 {{ color:var(--ink); letter-spacing:-0.025em; font-weight:700; }}
 .st-key-cta a:hover {{ background:var(--blue); }}
 .st-key-cta a p {{ color:#fff !important; font-weight:600; font-size:1rem; }}
 .st-key-cta a span {{ color:#fff !important; }}
+/* custom navbar (Streamlit header hidden) */
+header[data-testid="stHeader"] {{ display:none !important; }}
+.st-key-pc_nav {{ position:sticky; top:0; z-index:999; background:rgba(255,255,255,.9); backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line); padding:10px 0; margin-bottom:.6rem; }}
+.pc-brand {{ font-weight:700; font-size:1.02rem; letter-spacing:-0.02em; color:var(--ink); white-space:nowrap; }}
+.pc-brand span {{ color:var(--blue); }}
+.st-key-pc_navlinks {{ gap:6px !important; justify-content:center; }}
+.st-key-pc_navlinks [data-testid="stPageLink"] a {{ padding:.5rem .95rem; border-radius:8px; transition:background .15s ease, color .15s ease; }}
+.st-key-pc_navlinks [data-testid="stPageLink"] a:hover {{ background:var(--soft); }}
+.st-key-pc_navlinks [data-testid="stPageLink"] a p {{ font-weight:500; font-size:.95rem; color:var(--ink); }}
+.st-key-pc_navlinks [data-testid="stPageLink"] a:hover p {{ color:var(--blue); text-decoration:underline; text-underline-offset:4px; }}
+.st-key-pc_navcta a {{ background:var(--blue); border-radius:10px; padding:.55rem 1.1rem; justify-content:center; }}
+.st-key-pc_navcta a:hover {{ background:var(--ink); }}
+.st-key-pc_navcta a p, .st-key-pc_navcta a span {{ color:#fff !important; font-weight:600; white-space:nowrap; }}
+/* auto-scrolling segment chips */
+.st-key-seg_marquee {{ overflow:hidden; mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }}
+.st-key-seg_track {{ width:max-content !important; flex-wrap:nowrap !important; gap:8px !important;
+  animation:pcMarquee 22s linear infinite; }}
+.st-key-seg_marquee:hover .st-key-seg_track {{ animation-play-state:paused; }}
+.st-key-seg_track button {{ border-radius:999px; white-space:nowrap; font-weight:500; }}
+@keyframes pcMarquee {{ from {{ transform:translateX(0); }} to {{ transform:translateX(-50%); }} }}
+@media (prefers-reduced-motion: reduce) {{ .st-key-seg_track {{ animation:none; }} .st-key-seg_marquee {{ overflow-x:auto; }} }}
+.pc-seg-label {{ font-size:.85rem; color:var(--muted); margin:.4rem 0 .2rem; }}
+.pc-seg-label b {{ color:var(--ink); font-weight:600; }}
+@media (max-width: 640px) {{
+  .st-key-pc_navlinks {{ overflow-x:auto; flex-wrap:nowrap !important; justify-content:flex-start; }}
+  .st-key-pc_navlinks [data-testid="stPageLink"] a {{ padding:.45rem .6rem; }}
+  .pc-brand, .st-key-pc_navcta, .st-key-pc_nav [data-testid="stElementContainer"]:has(.pc-brand) {{ display:none; }}
+  .st-key-pc_navlinks {{ flex:1 1 auto; width:100% !important; }}
+}}
 /* Floating assistant, bottom-right */
 .st-key-pc_chat {{ position:fixed; right:20px; bottom:20px; z-index:9999; width:auto !important; }}
 .st-key-pc_chat button {{ background:var(--ink); color:#fff; border:none; border-radius:999px; padding:.7rem 1.15rem;
@@ -79,7 +108,6 @@ h1,h2,h3 {{ color:var(--ink); letter-spacing:-0.025em; font-weight:700; }}
   .pc-stat {{ border-right:none; border-bottom:1px solid var(--line); }}
   .pc-steps {{ grid-template-columns:1fr; gap:14px; }}
   .st-key-pc_chat {{ right:12px; bottom:12px; }}
-  .block-container {{ padding-top:1.4rem; }}
 }}
 </style>
 """
@@ -328,3 +356,35 @@ def footer() -> None:
                     st.success(f"Abonare înregistrată. Abonați în demo: {database.count_subscribers()}.")
                 else:
                     st.info("Această adresă este deja abonată.")
+
+
+# --------------------------------------------------------------------------
+# Navbar with CTA on the right, and auto-scrolling segment chips
+# --------------------------------------------------------------------------
+NAV_KEYS = ["home", "evaluare", "produs", "resurse", "simulator"]
+NAV_LABELS = {"home": "Acasă", "evaluare": "Evaluare", "produs": "Produs", "resurse": "Resurse", "simulator": "Simulator & CRM"}
+
+
+def navbar(pages: dict) -> None:
+    with st.container(key="pc_nav", horizontal=True, vertical_alignment="center", gap="medium"):
+        st.markdown('<div class="pc-brand">PaletCheck <span>UR20</span></div>', unsafe_allow_html=True, width="content")
+        with st.container(key="pc_navlinks", horizontal=True, vertical_alignment="center"):
+            for k in NAV_KEYS:
+                st.page_link(pages[k], label=NAV_LABELS[k], width="content")
+        with st.container(key="pc_navcta", width="content"):
+            st.page_link(pages["evaluare"], label="Evaluează-ți linia", icon=":material/arrow_forward:", width="content")
+
+
+def _pick_segment(seg: str) -> None:
+    st.session_state.segment = seg
+
+
+def segment_marquee() -> None:
+    current = st.session_state.segment
+    st.markdown(f'<div class="pc-seg-label">Ramura de producție: <b>{current}</b></div>', unsafe_allow_html=True)
+    with st.container(key="seg_marquee"):
+        with st.container(key="seg_track", horizontal=True):
+            for copy in range(2):  # two copies make the loop seamless
+                for i, seg in enumerate(calc.SEGMENTS):
+                    st.button(seg, key=f"seg_{copy}_{i}", on_click=_pick_segment, args=(seg,),
+                              type="primary" if seg == current else "secondary", width="content")

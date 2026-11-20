@@ -20,4 +20,6 @@ pages = {
     "simulator": st.Page("views/simulator.py", title="Simulator tehnic & CRM", icon=":material/tune:", url_path="simulator"),
 }
 st.session_state.pages = pages
-st.navigation(list(pages.values()), position="top").run()
+pg = st.navigation(list(pages.values()), position="hidden")
+ui.navbar(pages)
+pg.run()
