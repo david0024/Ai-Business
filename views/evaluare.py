@@ -87,14 +87,14 @@ def _show_report(d) -> None:
     hub = calc.hub_for_county(d["county"])
     st.subheader("Raportul dvs. de beneficii")
     if not b["eligible"]:
-        st.error(f"🔴 Găleata ({FMT(d['weight'])} kg) + gripperul (5 kg) = {FMT(b['payload'])} kg depășesc sarcina UR20 "
+        st.error(f"Găleata ({FMT(d['weight'])} kg) + gripperul (5 kg) = {FMT(b['payload'])} kg depășesc sarcina UR20 "
                  "de 20 kg. Configurația este în afara cazului de referință; discutați un format mai mic.")
         return
     if b["bottleneck"]:
-        st.warning(f"🟡 Linia dă {FMT(d['rate'])} găleți/min, peste ritmul testat de {FMT(b['benchmark'])}. "
+        st.warning(f"Linia dă {FMT(d['rate'])} găleți/min, peste ritmul testat de {FMT(b['benchmark'])}. "
                    "O celulă ar deveni blocajul: evaluăm 2 celule în paralel.")
     else:
-        st.success(f"🟢 Potrivire probabilă. Linia folosește {FMT(b['load_pct'], 0)}% din ritmul testat de "
+        st.success(f"Potrivire probabilă. Linia folosește {FMT(b['load_pct'], 0)}% din ritmul testat de "
                    f"{FMT(b['benchmark'])} găleți/min. Evaluarea tehnică o face biroul **{hub}**.")
 
     r1 = st.columns(2)
@@ -119,9 +119,9 @@ def _show_report(d) -> None:
               "Schimburi": f"{d['shifts']} × {FMT(d['hours'])} h", "Operatori/schimb": d["operators"],
               "Găleți/palet": d["bpp"]}
     a, c = st.columns(2)
-    a.download_button("⬇️ Descarcă raportul (HTML)", _report_html(d["seg"], d["county"], inputs, b),
+    a.download_button("Descarcă raportul (HTML)", _report_html(d["seg"], d["county"], inputs, b), icon=":material/download:",
                       file_name="raport-paletcheck-ur20.html", mime="text/html", use_container_width=True)
-    with c.popover("📨 Cere evaluarea tehnică", use_container_width=True):
+    with c.popover("Cere evaluarea tehnică", icon=":material/send:", use_container_width=True):
         with st.form("lead_form", border=False):
             company = st.text_input("Companie (fictivă)")
             email = st.text_input("E-mail de test", placeholder="test@exemplu.ro")

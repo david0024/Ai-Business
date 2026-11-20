@@ -15,47 +15,71 @@ INK = "#0A0F1C"
 
 CSS = f"""
 <style>
-:root {{ --blue:{BLUE}; --ink:{INK}; --muted:#5B6475; --line:#E3E8F0; --soft:#F2F6FC; }}
-.block-container {{ padding-top:1rem; padding-bottom:2rem; max-width:1100px; }}
-h1,h2,h3 {{ color:var(--ink); letter-spacing:-0.02em; }}
-.pc-banner {{ background:var(--ink); color:#fff; border-radius:10px; padding:8px 14px; font-size:.86rem; margin-bottom:.8rem; }}
-.pc-banner b {{ color:#9DB8FF; }}
-.pc-eyebrow {{ color:var(--blue); font-weight:700; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; }}
-.pc-hero h1 {{ color:var(--ink) !important; font-size:clamp(2rem, 5vw, 3.1rem); line-height:1.08; margin:.3rem 0 .8rem; padding:0; }}
-.pc-hero h1 span {{ color:var(--blue); }}
-.pc-lead {{ font-size:1.08rem; color:var(--muted); line-height:1.55; max-width:34rem; }}
-.pc-stats {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:1.2rem 0; }}
-.pc-stat {{ border:1px solid var(--line); border-radius:14px; padding:14px; background:#fff; }}
-.pc-stat .v {{ font-size:1.5rem; font-weight:800; color:var(--ink); }}
-.pc-stat .l {{ font-size:.82rem; color:var(--muted); line-height:1.35; }}
-.pc-card {{ border:1px solid var(--line); border-radius:16px; padding:18px; background:#fff; height:100%; }}
-.pc-card h4 {{ margin:0 0 .4rem; padding:0; font-size:1.02rem; }}
-.pc-card .big {{ font-size:1.7rem; font-weight:800; color:var(--blue); line-height:1.1; }}
-.pc-card p, .pc-card li {{ color:var(--muted); font-size:.92rem; line-height:1.45; }}
-.pc-tag {{ display:inline-block; font-size:.7rem; font-weight:700; border-radius:999px; padding:2px 9px; margin-bottom:6px; }}
-.pc-tag.fact {{ background:#E6EEFF; color:#0B3FB0; }}
-.pc-tag.est {{ background:#F1F2F4; color:#30343B; }}
-.pc-steps {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }}
-.pc-step {{ border-top:3px solid var(--blue); padding:10px 2px; }}
-.pc-step b {{ display:block; margin-bottom:2px; }}
-.pc-step span {{ color:var(--muted); font-size:.9rem; }}
-.st-key-pc_footer {{ background:var(--soft); border-top:4px solid var(--ink); border-radius:18px; padding:22px; margin-top:2.5rem; }}
-.pc-feed {{ border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px; background:#fff; }}
-.pc-feed .t {{ font-weight:700; color:var(--ink); }}
-.pc-feed .m {{ font-size:.78rem; color:var(--blue); font-weight:700; text-transform:uppercase; letter-spacing:.05em; }}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root {{ --blue:{BLUE}; --ink:{INK}; --muted:#5B6475; --line:#E6EAF0; --soft:#F6F8FB; }}
+html, body, .stApp, .stMarkdown p, .stMarkdown li, h1, h2, h3, h4, h5, label, input, textarea, select,
+button p, [data-testid="stWidgetLabel"] p {{ font-family:'Inter', system-ui, -apple-system, sans-serif; }}
+/* hide Streamlit chrome (toolbar, anchors, footer badge) */
+[data-testid="stToolbarActions"], [data-testid="stAppDeployButton"], [data-testid="stMainMenu"],
+[data-testid="stToolbar"] > *:not([data-testid="stTopNav"]):not(:has([data-testid="stTopNav"])),
+[data-testid="stDecoration"], [data-testid="stStatusWidget"],
+[data-testid="stHeaderActionElements"], .stDeployButton, footer {{ display:none !important; }}
+header[data-testid="stHeader"] {{ background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line); }}
+.block-container {{ padding-top:2.2rem; padding-bottom:2rem; max-width:1120px; }}
+h1,h2,h3 {{ color:var(--ink); letter-spacing:-0.025em; font-weight:700; }}
+.pc-note {{ display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.8rem; margin-bottom:1.4rem; }}
+.pc-note svg {{ flex:none; }}
+.pc-eyebrow {{ display:inline-flex; align-items:center; gap:8px; color:var(--blue); font-weight:600; font-size:.78rem;
+  letter-spacing:.06em; text-transform:uppercase; }}
+.pc-eyebrow:before {{ content:""; width:18px; height:2px; background:var(--blue); }}
+.pc-hero h1 {{ color:var(--ink) !important; font-size:clamp(2.1rem, 4.6vw, 3.4rem); line-height:1.05; font-weight:700;
+  letter-spacing:-0.035em; margin:.6rem 0 1rem; padding:0; }}
+.pc-hero h1 .mu {{ color:var(--muted); font-style:normal; }}
+.pc-lead {{ font-size:1.1rem; color:var(--muted); line-height:1.6; max-width:33rem; }}
+.pc-stats {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin:2rem 0 1rem;
+  border:1px solid var(--line); border-radius:16px; overflow:hidden; }}
+.pc-stat {{ padding:18px 20px; background:#fff; border-right:1px solid var(--line); }}
+.pc-stat:last-child {{ border-right:none; }}
+.pc-stat .v {{ font-size:1.65rem; font-weight:700; color:var(--ink); letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }}
+.pc-stat .l {{ font-size:.82rem; color:var(--muted); line-height:1.45; margin-top:2px; }}
+.pc-card {{ border:1px solid var(--line); border-radius:16px; padding:20px; background:#fff; height:100%;
+  box-shadow:0 1px 2px rgba(10,15,28,.04); }}
+.pc-card h4 {{ margin:0 0 .4rem; padding:0; font-size:1rem; font-weight:600; }}
+.pc-card .big {{ font-size:1.75rem; font-weight:700; color:var(--ink); letter-spacing:-0.02em; line-height:1.1; }}
+.pc-card p, .pc-card li {{ color:var(--muted); font-size:.9rem; line-height:1.5; }}
+.pc-tag {{ display:inline-block; font-size:.68rem; font-weight:600; border-radius:6px; padding:2px 8px; margin-bottom:8px;
+  letter-spacing:.03em; text-transform:uppercase; }}
+.pc-tag.fact {{ background:#EAF0FF; color:#0B3FB0; }}
+.pc-tag.est {{ background:#F1F3F6; color:#3A404B; }}
+.pc-steps {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }}
+.pc-step {{ padding:4px 0; }}
+.pc-step .n {{ font-size:.75rem; font-weight:600; color:var(--blue); font-variant-numeric:tabular-nums; }}
+.pc-step b {{ display:block; margin:4px 0 2px; font-weight:600; }}
+.pc-step span {{ color:var(--muted); font-size:.9rem; line-height:1.5; }}
+.st-key-pc_footer {{ border-top:1px solid var(--line); padding:28px 0 8px; margin-top:3rem; }}
+.pc-feed {{ border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:10px; background:#fff; }}
+.pc-feed .t {{ font-weight:600; color:var(--ink); }}
+.pc-feed .m {{ font-size:.72rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }}
 .pc-feed p {{ margin:.25rem 0 .35rem; color:var(--muted); font-size:.9rem; }}
-/* Streamlit buttons: primary = blue, secondary = ink outline */
-.stButton button[kind="primary"], .stFormSubmitButton button[kind="primaryFormSubmit"], [data-testid="stPageLink"] a {{ border-radius:999px; font-weight:700; }}
-.st-key-cta a {{ background:var(--blue); color:#fff !important; border-radius:999px; padding:.7rem 1.4rem; justify-content:center; }}
-.st-key-cta a:hover {{ background:#0848CC; }}
-.st-key-cta a p {{ color:#fff !important; font-weight:700; font-size:1.02rem; }}
+.pc-feed a {{ color:var(--blue); font-weight:600; text-decoration:none; }}
+.stButton button, .stFormSubmitButton button, .stDownloadButton button, [data-testid="stPopover"] button {{ border-radius:10px; font-weight:600; }}
+.st-key-cta a {{ background:var(--ink); color:#fff !important; border-radius:10px; padding:.75rem 1.3rem; justify-content:center;
+  transition:background .2s ease; }}
+.st-key-cta a:hover {{ background:var(--blue); }}
+.st-key-cta a p {{ color:#fff !important; font-weight:600; font-size:1rem; }}
+.st-key-cta a span {{ color:#fff !important; }}
 /* Floating assistant, bottom-right */
-.st-key-pc_chat {{ position:fixed; right:18px; bottom:18px; z-index:9999; width:auto !important; }}
-.st-key-pc_chat button {{ background:var(--blue); color:#fff; border:none; border-radius:999px; padding:.65rem 1.1rem;
-  box-shadow:0 10px 30px rgba(11,95,255,.35); font-weight:700; }}
+.st-key-pc_chat {{ position:fixed; right:20px; bottom:20px; z-index:9999; width:auto !important; }}
+.st-key-pc_chat button {{ background:var(--ink); color:#fff; border:none; border-radius:999px; padding:.7rem 1.15rem;
+  box-shadow:0 12px 32px rgba(10,15,28,.25); }}
+.st-key-pc_chat button:hover {{ background:var(--blue); color:#fff; }}
 @media (max-width: 640px) {{
-  .pc-stats, .pc-steps {{ grid-template-columns:1fr; }}
-  .st-key-pc_chat {{ right:10px; bottom:10px; }}
+  .pc-stats {{ grid-template-columns:1fr; }}
+  .pc-stat {{ border-right:none; border-bottom:1px solid var(--line); }}
+  .pc-steps {{ grid-template-columns:1fr; gap:14px; }}
+  .st-key-pc_chat {{ right:12px; bottom:12px; }}
+  .block-container {{ padding-top:1.4rem; }}
 }}
 </style>
 """
@@ -71,8 +95,10 @@ def setup() -> None:
 
 def banner() -> None:
     st.markdown(
-        '<div class="pc-banner">⚠️ <b>Prototip demonstrativ.</b> Nu introduceți date personale reale sau '
-        "informații confidențiale ale companiei. Folosiți doar <b>date de test fictive</b>.</div>",
+        '<div class="pc-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B5FFF" '
+        'stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>'
+        "<span>Prototip demonstrativ: folosiți doar date fictive, fără date personale sau informații "
+        "confidențiale ale companiei.</span></div>",
         unsafe_allow_html=True,
     )
 
@@ -80,61 +106,79 @@ def banner() -> None:
 # --------------------------------------------------------------------------
 # Robot arm: pure SVG + CSS, only the arm moves up and down.
 # --------------------------------------------------------------------------
-ROBOT_ARM_SVG = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 380" role="img" aria-label="Braț robotic colaborativ UR20 care se mișcă sus-jos">
+ROBOT_ARM_SVG = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 400" role="img" aria-label="Braț robotic colaborativ UR20">
 <style>
-.upper, .fore, .wrist {{ transform-box:view-box; animation-duration:3.4s;
-  animation-iteration-count:infinite; animation-timing-function:cubic-bezier(.45,0,.55,1); }}
-.upper {{ transform-origin:130px 262px; animation-name:pcUpper; }}
-.fore  {{ transform-origin:250px 132px; animation-name:pcFore; }}
-.wrist {{ transform-origin:360px 160px; animation-name:pcWrist; }}
-.shadow {{ transform-box:fill-box; transform-origin:center; animation:pcShadow 3.4s infinite cubic-bezier(.45,0,.55,1); }}
-@keyframes pcUpper {{ 0%,100% {{ transform:rotate(-7deg); }} 50% {{ transform:rotate(6deg); }} }}
-@keyframes pcFore  {{ 0%,100% {{ transform:rotate(-9deg); }} 50% {{ transform:rotate(14deg); }} }}
-@keyframes pcWrist {{ 0%,100% {{ transform:rotate(16deg); }} 50% {{ transform:rotate(-20deg); }} }}
-@keyframes pcShadow {{ 0%,100% {{ transform:scaleX(.8); opacity:.10; }} 50% {{ transform:scaleX(1.05); opacity:.22; }} }}
+.upper, .fore, .wrist, .shadow {{ animation-duration:5.6s; animation-iteration-count:infinite;
+  animation-timing-function:cubic-bezier(.65,0,.35,1); }}
+.upper {{ transform-box:view-box; transform-origin:140px 268px; animation-name:a1; }}
+.fore  {{ transform-box:view-box; transform-origin:262px 136px; animation-name:a2; }}
+.wrist {{ transform-box:view-box; transform-origin:372px 168px; animation-name:a3; }}
+.shadow {{ transform-box:fill-box; transform-origin:center; animation-name:a4; }}
+.led {{ animation:led 2.8s ease-in-out infinite; }}
+@keyframes a1 {{ 0%,12% {{ transform:rotate(-6deg); }} 46%,62% {{ transform:rotate(5deg); }} 100% {{ transform:rotate(-6deg); }} }}
+@keyframes a2 {{ 0%,12% {{ transform:rotate(-8deg); }} 46%,62% {{ transform:rotate(12deg); }} 100% {{ transform:rotate(-8deg); }} }}
+@keyframes a3 {{ 0%,12% {{ transform:rotate(14deg); }} 46%,62% {{ transform:rotate(-17deg); }} 100% {{ transform:rotate(14deg); }} }}
+@keyframes a4 {{ 0%,12% {{ transform:scaleX(.82); opacity:.10; }} 46%,62% {{ transform:scaleX(1.05); opacity:.2; }} 100% {{ transform:scaleX(.82); opacity:.10; }} }}
+@keyframes led {{ 0%,100% {{ opacity:.35; }} 50% {{ opacity:1; }} }}
 @media (prefers-reduced-motion: reduce) {{ * {{ animation:none !important; }} }}
 </style>
-  <defs>
-    <linearGradient id="tube" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#E9EEF6"/><stop offset="1" stop-color="#C9D3E3"/>
-    </linearGradient>
-    <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#3D82FF"/><stop offset="1" stop-color="{BLUE}"/>
-    </linearGradient>
-    <linearGradient id="base" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#1A2233"/><stop offset=".5" stop-color="#2B3548"/><stop offset="1" stop-color="#0A0F1C"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="460" height="380" rx="28" fill="#F2F6FC"/>
-  <ellipse class="shadow" cx="360" cy="344" rx="70" ry="9" fill="{INK}"/>
-  <!-- pedestal -->
-  <rect x="88" y="300" width="84" height="48" rx="8" fill="url(#base)"/>
-  <rect x="78" y="340" width="104" height="12" rx="5" fill="{INK}"/>
-  <rect x="100" y="270" width="60" height="34" rx="10" fill="url(#tube)" stroke="#B8C4D6"/>
-  <g class="upper">
-    <!-- upper arm -->
-    <line x1="130" y1="262" x2="250" y2="132" stroke="#B8C4D6" stroke-width="44" stroke-linecap="round"/>
-    <line x1="130" y1="262" x2="250" y2="132" stroke="url(#tube)" stroke-width="40" stroke-linecap="round"/>
-    <circle cx="130" cy="262" r="30" fill="url(#cap)"/><circle cx="130" cy="262" r="12" fill="{INK}"/>
-    <g class="fore">
-      <!-- forearm -->
-      <line x1="250" y1="132" x2="360" y2="160" stroke="#B8C4D6" stroke-width="34" stroke-linecap="round"/>
-      <line x1="250" y1="132" x2="360" y2="160" stroke="url(#tube)" stroke-width="30" stroke-linecap="round"/>
-      <circle cx="250" cy="132" r="25" fill="url(#cap)"/><circle cx="250" cy="132" r="10" fill="{INK}"/>
-      <g class="wrist">
-        <circle cx="360" cy="160" r="19" fill="url(#cap)"/><circle cx="360" cy="160" r="7" fill="{INK}"/>
-        <rect x="350" y="176" width="20" height="28" rx="6" fill="url(#tube)" stroke="#B8C4D6"/>
-        <!-- gripper -->
-        <rect x="326" y="202" width="68" height="12" rx="4" fill="{INK}"/>
-        <rect x="328" y="212" width="9" height="26" rx="3" fill="#2B3548"/>
-        <rect x="383" y="212" width="9" height="26" rx="3" fill="#2B3548"/>
-        <!-- bucket -->
-        <path d="M333 236 h54 l-6 56 h-42 z" fill="#FFFFFF" stroke="{INK}" stroke-width="2.5" stroke-linejoin="round"/>
-        <rect x="331" y="230" width="58" height="9" rx="3" fill="{BLUE}"/>
-        <path d="M341 254 h38" stroke="#C9D3E3" stroke-width="2"/>
-      </g>
-    </g>
+<defs>
+  <radialGradient id="bg" cx="70%" cy="35%" r="80%"><stop offset="0" stop-color="#EEF3FF"/><stop offset="1" stop-color="#FFFFFF"/></radialGradient>
+  <linearGradient id="alu" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#EEF1F5"/><stop offset="1" stop-color="#C3CBD6"/></linearGradient>
+  <linearGradient id="joint" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F7F9FB"/><stop offset="1" stop-color="#B9C2CE"/></linearGradient>
+  <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#3A4252"/><stop offset="1" stop-color="#0E131C"/></linearGradient>
+  <linearGradient id="graphite" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#1A202B"/><stop offset=".5" stop-color="#363E4C"/><stop offset="1" stop-color="#0E131C"/></linearGradient>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#0A0F1C" flood-opacity=".14"/></filter>
+</defs>
+<rect width="460" height="400" rx="24" fill="url(#bg)"/>
+<g stroke="#E3E8F0" stroke-width="1">
+  <path d="M0 356 H460"/><path d="M40 356 L0 400 M120 356 L100 400 M200 356 L200 400 M280 356 L300 400 M360 356 L400 400 M440 356 L460 380"/>
+</g>
+<ellipse class="shadow" cx="372" cy="356" rx="62" ry="7" fill="{INK}"/>
+<ellipse cx="140" cy="356" rx="66" ry="7" fill="{INK}" opacity=".12"/>
+<!-- pedestal -->
+<rect x="96" y="300" width="88" height="54" rx="6" fill="url(#graphite)"/>
+<rect x="86" y="346" width="108" height="10" rx="3" fill="{INK}"/>
+<circle class="led" cx="170" cy="314" r="3" fill="{BLUE}"/>
+<rect x="110" y="272" width="60" height="32" rx="8" fill="url(#joint)" stroke="#AEB8C5"/>
+<rect x="110" y="292" width="60" height="4" fill="{BLUE}"/>
+<g filter="url(#soft)">
+ <g class="upper">
+  <path d="M126 252 L248 120 L276 152 L154 284 Z" fill="url(#alu)" stroke="#B4BDC9" stroke-width="1"/>
+  <path d="M131 256 L251 127" stroke="#FFFFFF" stroke-width="3" opacity=".9"/>
+  <circle cx="140" cy="268" r="31" fill="url(#joint)" stroke="#AEB8C5"/>
+  <circle cx="140" cy="268" r="22" fill="none" stroke="{BLUE}" stroke-width="3.5"/>
+  <circle cx="140" cy="268" r="16" fill="url(#cap)"/>
+  <circle cx="134" cy="262" r="4" fill="#FFFFFF" opacity=".25"/>
+  <g class="fore">
+   <path d="M258 122 L376 152 L368 184 L250 154 Z" fill="url(#alu)" stroke="#B4BDC9" stroke-width="1"/>
+   <path d="M262 126 L376 155" stroke="#FFFFFF" stroke-width="2.5" opacity=".9"/>
+   <circle cx="262" cy="136" r="26" fill="url(#joint)" stroke="#AEB8C5"/>
+   <circle cx="262" cy="136" r="18" fill="none" stroke="{BLUE}" stroke-width="3"/>
+   <circle cx="262" cy="136" r="13" fill="url(#cap)"/>
+   <circle cx="257" cy="131" r="3.5" fill="#FFFFFF" opacity=".25"/>
+   <g class="wrist">
+    <circle cx="372" cy="168" r="19" fill="url(#joint)" stroke="#AEB8C5"/>
+    <circle cx="372" cy="168" r="13" fill="none" stroke="{BLUE}" stroke-width="2.5"/>
+    <circle cx="372" cy="168" r="9" fill="url(#cap)"/>
+    <rect x="361" y="184" width="22" height="24" rx="5" fill="url(#joint)" stroke="#AEB8C5"/>
+    <rect x="361" y="196" width="22" height="3" fill="{BLUE}"/>
+    <!-- gripper -->
+    <rect x="336" y="208" width="72" height="10" rx="3" fill="url(#cap)"/>
+    <rect x="339" y="216" width="8" height="30" rx="2" fill="#2A313D"/>
+    <rect x="397" y="216" width="8" height="30" rx="2" fill="#2A313D"/>
+    <!-- bucket -->
+    <path d="M348 240 h48 l-5 54 a4 4 0 0 1 -4 3.5 h-30 a4 4 0 0 1 -4 -3.5 z" fill="#FFFFFF" stroke="#C3CBD6" stroke-width="1.5"/>
+    <rect x="345" y="234" width="54" height="8" rx="2" fill="#FFFFFF" stroke="#C3CBD6" stroke-width="1.5"/>
+    <path d="M354 254 h36" stroke="#E6EAF0" stroke-width="6"/>
+   </g>
   </g>
+ </g>
+</g>
 </svg>"""
 
 
@@ -224,7 +268,7 @@ def _on_segment_pick() -> None:
 def chat_widget() -> None:
     ss = st.session_state
     with st.container(key="pc_chat"):
-        with st.popover("💬 Asistent UR20"):
+        with st.popover("Asistent UR20", icon=":material/forum:"):
             st.markdown("**Asistent PaletCheck** · răspunsuri verificate din studiul de caz")
             st.pills("Tipul companiei", calc.SEGMENTS, key="pc_chat_segment", on_change=_on_segment_pick)
             box = st.container(height=240)
@@ -232,7 +276,7 @@ def chat_widget() -> None:
                 if not ss.pc_chat:
                     st.caption("Alegeți tipul companiei sau puneți o întrebare. Calculele sunt făcute în Python, nu de AI.")
                 for role, msg in ss.pc_chat[-8:]:
-                    st.chat_message(role, avatar="🧑‍🏭" if role == "user" else "🤖").write(msg)
+                    st.chat_message(role, avatar=":material/person:" if role == "user" else ":material/precision_manufacturing:").write(msg)
             cols = st.columns(2)
             for i, q in enumerate(QUICK_QUESTIONS):
                 cols[i % 2].button(q, key=f"pcq_{i}", on_click=_ask, args=(q,), use_container_width=True)
