@@ -58,7 +58,7 @@ def render() -> None:
     for kind, src, title, desc, url in items:
         st.markdown(
             f'<div class="pc-feed"><div class="m">{kind} · {src}</div><div class="t">{title}</div>'
-            f'<p>{desc}</p><a href="{url}" target="_blank" rel="noopener">Deschide →</a></div>',
+            f'<p>{desc}</p><a href="{url}" target="_blank" rel="noopener" aria-label="{title} ({src})">Citește: {title}</a></div>',
             unsafe_allow_html=True,
         )
     if not items:

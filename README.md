@@ -44,3 +44,9 @@ Asistentul (dreapta jos) răspunde din întrebări verificate și preselectează
 | `ai_consultant.py` | Client OpenRouter + parser determinist de rezervă |
 | `report_builder.py` | Raport Markdown + HTML printabil (`@media print`) |
 | `database.py` | SQLite `app.db`, auto-creat, 3 cereri demo pre-încărcate |
+
+## SEO și căutare asistată de AI
+- Titluri descriptive per pagină, un singur H1 pe pagină, secțiune FAQ vizibilă pe Acasă.
+- JSON-LD (Organization, Product, WebApplication, FAQPage) și meta description injectate în pagină (`seo.py`).
+- Limită: Streamlit randează în browser, deci motoarele de căutare văd puțin conținut. De aceea `site/` conține o pagină statică
+  (HTML semantic, meta, Open Graph, JSON-LD, FAQ, surse) plus `robots.txt` și `llms.txt`. `vercel.json` publică `site/` pe Vercel.
